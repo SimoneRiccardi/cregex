@@ -9,6 +9,7 @@ cregex_parse_result_t   cregex_parse_str_section(cregex_t* obj,const char* regex
     for(i=0;;i++){
         switch(regex[i]){
             case '[':
+            case '-':                
             case ']':
             case '(':
             case ')':
