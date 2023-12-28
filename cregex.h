@@ -18,7 +18,7 @@
    @param  read_buffer_size   size of read_buffer
    @return     initalized object
  */
-cregex_t*  cregex_init(cregex_t* obj,cregex_element_t* parse_buffer,size_t parse_buffer_size,char* read_buffer,size_t read_buffer_size);
+cregex_t*  cregex_init(cregex_t* obj,cregex_element_t* parse_buffer,size_t parse_buffer_size);
 
 
 typedef enum{
@@ -43,6 +43,8 @@ typedef struct{
 cregex_parse_result_t    cregex_parse_str(cregex_t* obj,const char* regex);
 
 
+cregex_reader_file_t*  cregex_reader_file_init(cregex_reader_file_t* obj,const cregex_t* parsed_cregex, FILE* file,size_t read_limit,char* read_buffer,size_t read_buffer_size);
+
 typedef enum{
     CREGEX_READ_EOF,
     CREGEX_READ_REACHED_LIMIT,   /** returned if the read_limit number of character is reached @see cregex_read */
@@ -64,6 +66,6 @@ typedef struct{
    @see cregex_read_result_t
    @see cregex_read_result_status_t
  */
-cregex_read_result_t  cregex_read(cregex_t* obj,FILE* file,size_t read_limit);
+cregex_read_result_t  cregex_read_file(const cregex_reader_file_t* obj);
 
 #endif
