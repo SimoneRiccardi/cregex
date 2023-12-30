@@ -16,7 +16,7 @@ cregex_reader_file_t*  cregex_reader_file_init(cregex_reader_file_t* obj,const c
     return obj;
 }
 
-cregex_parse_result_t   cregex_parse_str(cregex_t* obj,const char* regex){
+cregex_parse_str_result_t   cregex_parse_str(cregex_t* obj,const char* regex){
     return cregex_parse_str_section(obj,regex,CREGEX_SECTION_NONE);
 }
 
