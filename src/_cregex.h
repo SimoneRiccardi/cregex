@@ -37,7 +37,7 @@ typedef struct{
 cregex_element_t* cregex_element_init_range(cregex_element_t* obj,char begin,char end);
 cregex_element_t* cregex_element_init_str(cregex_element_t* obj,const char* str, size_t strsize);
 cregex_element_t* cregex_element_set_repeat(cregex_element_t* obj,size_t min,size_t max);
-cregex_element_t* cregex_element_set_groupsize(cregex_element_t* obj,size_t groupsize);
+void              cregex_element_set_next_or_pos(cregex_element_t* obj,size_t pos);
 
 typedef struct{
     cregex_element_t* _parse_buffer;
