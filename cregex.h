@@ -27,8 +27,9 @@ typedef enum{
 
 typedef struct{
     cregex_parse_result_status_t  status; /** parse result */
-    size_t                        parsed; /** in case of error the character when the error occurred */
-}cregex_parse_result_t;
+    size_t                        str_regex_i; /** number of character of the string or in case of error the character when the error occurred  */
+    size_t                        n_elements_used;
+}cregex_parse_str_result_t;
 
 /**
    @param  obj the object where the parse result will be memorized
@@ -36,7 +37,8 @@ typedef struct{
    @return parse result
    @see    cregex_parse_result_t
  */
-cregex_parse_result_t    cregex_parse_str(cregex_t* obj,const char* regex);
+cregex_parse_str_result_t    cregex_parse_str(cregex_t* obj,const char* regex);
+
 
 /**
    @param   obj the object to initalize
