@@ -1,9 +1,10 @@
 #include "../cregex.h"
 #include "./cregex_parse.h"
 
-cregex_t*  cregex_create(cregex_t* obj,cregex_element_t* parse_buffer,size_t parse_buffer_size){
+cregex_t*  cregex_init(cregex_t* obj,cregex_element_t* parse_buffer,size_t parse_buffer_size){
     obj->_parse_buffer = parse_buffer;
     obj->_parse_buffer_size_total = parse_buffer_size;
+    obj->_parse_buffer_size_used=0;
     return obj;
 }
 
