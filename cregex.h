@@ -21,7 +21,7 @@ cregex_t*  cregex_init(cregex_t* obj,cregex_element_t* parse_buffer,size_t parse
 
 typedef enum{
     CREGEX_PARSE_SUCCESS,
-    CREGEX_PARSE_OUT_OF_MEMORY    
+    CREGEX_PARSE_OUT_OF_MEMORY
 }cregex_parse_result_status_t;
 
 

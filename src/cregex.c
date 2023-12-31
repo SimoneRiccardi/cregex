@@ -17,7 +17,12 @@ cregex_reader_file_t*  cregex_reader_file_init(cregex_reader_file_t* obj,const c
 }
 
 cregex_parse_str_result_t   cregex_parse_str(cregex_t* obj,const char* regex){
-    return cregex_parse_str_section(obj,regex,CREGEX_SECTION_NONE);
+    cregex_parse_str_section_args_t  args;
+    cregex_parse_str_result_t  res;
+    res.status = cregex_parse_str_section(cregex_parse_str_section_arg_init(&args,regex,obj->_parse_buffer,obj->_parse_buffer_size_total));
+    res.n_elements_used =  obj->_parse_buffer_size_used = args.elems_i;
+    res.str_regex_i = args.regex_i;
+    return res;
 }
 
 cregex_read_result_t  cregex_read_file(const cregex_reader_file_t* obj){
