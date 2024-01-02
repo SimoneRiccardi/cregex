@@ -24,7 +24,7 @@ cregex_parse_result_status_t  cregex_parse_element_break(cregex_parse_str_sectio
         if(args->elems_i==args->elems_size){
             return CREGEX_PARSE_OUT_OF_MEMORY;
         }
-        cregex_element_init_str(&args->elems[args->elems_i++],args->regex + args->regex_i - 1 - args->_elem_str_i,args->_elem_str_i);
+        cregex_element_init_str(&args->elems[args->elems_i++],args->regex + args->regex_i - args->_elem_str_i,args->_elem_str_i);
         args->_elem_str_i=0;
     }
     return CREGEX_PARSE_SUCCESS;
@@ -43,12 +43,12 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
         return CREGEX_PARSE_OUT_OF_MEMORY;
     }
     cregex_element_init_range(&args->elems[args->elems_i++],args->regex[args->regex_i],args->regex[args->regex_i+2]);
-    args->regex_i+=2;
+    args->regex_i+=3;
     return CREGEX_PARSE_SUCCESS;
 }
 
 cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args){
-    cregex_parse_result_status_t res;
+    cregex_parse_result_status_t res = CREGEX_PARSE_SUCCESS;
     /*    cregex_parse_str_result_t res;
     res.n_elements_used = 0;
     res.str_regex_i     = 0;
@@ -73,7 +73,7 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
         switch(args->regex[args->regex_i]){
             case '-':{
                 if(   args->regex_i==0 ||
-                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||
+                      /*                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) || */
                       cregex_parse_str_is_terminated(args->regex + args->regex_i + 1,args->type)
                    ){
                     ++args->_elem_str_i;
@@ -85,11 +85,8 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
 
                 
             }break;
-            case '[':{
-                
-            }break;
+            case '[':
             case ']':
-                
             case '(':
             case ')':
             case '*':
