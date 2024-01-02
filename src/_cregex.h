@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef enum{
     CREGEX_ELEMENT_TYPE_NONE,
@@ -36,8 +37,14 @@ typedef struct{
 
 cregex_element_t* cregex_element_init_range(cregex_element_t* obj,char begin,char end);
 cregex_element_t* cregex_element_init_str(cregex_element_t* obj,const char* str, size_t strsize);
-cregex_element_t* cregex_element_set_repeat(cregex_element_t* obj,size_t min,size_t max);
 void              cregex_element_set_next_or_pos(cregex_element_t* obj,size_t pos);
+
+cregex_element_t* cregex_element_set_repeat(cregex_element_t* obj,size_t min,size_t max);
+cregex_element_t* cregex_element_set_repeat_max_infinite(cregex_element_t* obj,size_t min);
+bool              cregex_element_is_repeat_max_infinite(cregex_element_t *obj);
+/*only valid if cregex_element_is_repeat_max_infinite(obj)==false*/
+size_t            cregex_element_get_repeat_max(cregex_element_t *obj);
+size_t            cregex_element_get_repeat_min(cregex_element_t *obj);
 
 typedef struct{
     cregex_element_t* _parse_buffer;
