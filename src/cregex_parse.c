@@ -69,14 +69,13 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
             }                                                               \
     }
     */
-    for(;!cregex_parse_str_is_terminated(args->regex+args->regex_i,args->type);++args->regex_i){
+    for(;!cregex_parse_str_is_terminated(&args->regex[args->regex_i],args->type);++args->regex_i){
         switch(args->regex[args->regex_i]){
             case '-':{
                 if(   args->regex_i==0 ||
-                      /*                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) || */
-                      cregex_parse_str_is_terminated(args->regex + args->regex_i + 1,args->type)
+ /*                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||  TODO implement braket and uncomment this instruction*/
+                      cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ],args->type)
                    ){
-                    ++args->_elem_str_i;
                     break;
                 }
                 
@@ -85,15 +84,21 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
 
                 
             }break;
+            case '*':
+                
+            case '+':
+                
+            case '?':
+                
+            case '{':
+                
+            case '}':
+
+                
             case '[':
             case ']':
             case '(':
             case ')':
-            case '*':
-            case '+':
-            case '?':
-            case '{':
-            case '}':
             case '^':
             case '$':
             case '|':
