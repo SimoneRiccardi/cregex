@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define CREGEX_ELEMENT_REPEAT_INFINTE 0
+
 typedef enum{
     CREGEX_ELEMENT_TYPE_NONE,
     CREGEX_ELEMENT_TYPE_RANGE,
@@ -40,8 +42,6 @@ cregex_element_t* cregex_element_init_str(cregex_element_t* obj,const char* str,
 void              cregex_element_set_next_or_pos(cregex_element_t* obj,size_t pos);
 
 cregex_element_t* cregex_element_set_repeat(cregex_element_t* obj,size_t min,size_t max);
-cregex_element_t* cregex_element_set_repeat_max_infinite(cregex_element_t* obj,size_t min);
-bool              cregex_element_is_repeat_max_infinite(cregex_element_t *obj);
 /*only valid if cregex_element_is_repeat_max_infinite(obj)==false*/
 size_t            cregex_element_get_repeat_max(cregex_element_t *obj);
 size_t            cregex_element_get_repeat_min(cregex_element_t *obj);

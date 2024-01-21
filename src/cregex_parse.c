@@ -61,7 +61,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat(cregex_parse_str_section_a
 cregex_parse_result_status_t  cregex_parse_str_repeat_inf(cregex_parse_str_section_args_t* args,size_t min){
     if(args->elems_i==0 || cregex_element_is_repeat(&args->elems[args->elems_i-1],1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;    
 
-    cregex_element_set_repeat_max_infinite(&args->elems[args->elems_i-1],min);
+    cregex_element_set_repeat(&args->elems[args->elems_i-1],min,CREGEX_ELEMENT_REPEAT_INFINTE);
     return CREGEX_PARSE_SUCCESS;             
 }
 
@@ -90,7 +90,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     max = (size_t) strtoull(args->regex+args->regex_i,&eptr,0);
     nsize = ((args->regex+args->regex_i)-eptr);
     if(nsize==0){
-        cregex_element_set_repeat_max_infinite(&args->elems[args->elems_i-1],min);
+        cregex_element_set_repeat(&args->elems[args->elems_i-1],min,CREGEX_ELEMENT_REPEAT_INFINTE);
     }else{
         cregex_element_set_repeat(&args->elems[args->elems_i-1],min,max);
     }
