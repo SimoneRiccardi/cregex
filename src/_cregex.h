@@ -45,6 +45,8 @@ bool              cregex_element_is_repeat_max_infinite(cregex_element_t *obj);
 /*only valid if cregex_element_is_repeat_max_infinite(obj)==false*/
 size_t            cregex_element_get_repeat_max(cregex_element_t *obj);
 size_t            cregex_element_get_repeat_min(cregex_element_t *obj);
+bool              cregex_element_is_repeat(cregex_element_t *obj,size_t min,size_t max);
+
 
 typedef struct{
     cregex_element_t* _parse_buffer;

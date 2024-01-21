@@ -45,3 +45,6 @@ size_t            cregex_element_get_repeat_min(cregex_element_t *obj){
     return obj->_repeat.max;
 }
 
+bool            cregex_element_is_repeat(cregex_element_t *obj,size_t min,size_t max){
+    return obj->_repeat.min==min && obj->_repeat.max==max;
+}
