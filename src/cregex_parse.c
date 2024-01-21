@@ -1,12 +1,10 @@
 #include "./cregex_parse.h"
 
-cregex_section_t   cregex_section_add(cregex_section_t elem,cregex_section_t start){ return start|elem;  }
-bool               cregex_section_in(cregex_section_t elem,cregex_section_t toeval){return (elem&&toeval)!=0; }
-
-bool               cregex_parse_str_is_terminated(const char* str,cregex_section_t type){
+bool               cregex_parse_str_is_terminated(const char* str){
     /*TODO implement*/
     return *str=='\0';
 }
+
 
 cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse_str_section_args_t* args,const char* regex,cregex_element_t* elems,size_t elems_size){
     args->elems = elems;
@@ -14,7 +12,6 @@ cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse
     args->elems_size = elems_size;
     args->regex = regex;
     args->regex_i = 0;
-    args->type = CREGEX_SECTION_NONE;
     args->_elem_str_i = 0;
     return args;
 }
@@ -35,7 +32,7 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
 
     if(   args->regex_i==0 ||
           /*                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||  TODO implement braket and uncomment this instruction*/
-          cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ],args->type)
+          cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ])
           ){
             return CREGEX_PARSE_SUCCESS;
     }
@@ -84,7 +81,7 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
             }                                                               \
     }
     */
-    for(;!cregex_parse_str_is_terminated(&args->regex[args->regex_i],args->type);++args->regex_i){
+    for(;!cregex_parse_str_is_terminated(&args->regex[args->regex_i]);++args->regex_i){
         switch(args->regex[args->regex_i]){
             case '-':{
                 res = cregex_parse_str_range(args);
