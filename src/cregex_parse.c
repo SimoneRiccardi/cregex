@@ -71,7 +71,7 @@ cregex_parse_result_status_t   cregex_parse_str_repeat_strbreak(cregex_parse_str
 cregex_parse_result_status_t  cregex_parse_str_repeat(cregex_parse_str_section_args_t* args,size_t min,size_t max){
     if(args->elems_i==0 || cregex_element_is_repeat(&args->elems[args->elems_i-1],1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;
 
-    cregex_element_set_repeat(&args->elems[args->elems_i-1],0,1);
+    cregex_element_set_repeat(&args->elems[args->elems_i-1],min,max);
     return CREGEX_PARSE_SUCCESS;
 }
 
@@ -89,7 +89,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     if(args->elems_i==0) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;
     ++args->regex_i;
 
-    min = (size_t) strtoull(args->regex+args->regex_i,&eptr,0);
+    min = (size_t) strtoul(args->regex+args->regex_i,&eptr,0);
     nsize = ((args->regex+args->regex_i)-eptr);
     if(nsize==0){
         return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
@@ -104,7 +104,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     }
     
     ++args->regex_i;    
-    max = (size_t) strtoull(args->regex+args->regex_i,&eptr,0);
+    max = (size_t) strtoul(args->regex+args->regex_i,&eptr,0);
     nsize = ((args->regex+args->regex_i)-eptr);
     if(nsize==0){
         cregex_element_set_repeat(&args->elems[args->elems_i-1],min,CREGEX_ELEMENT_REPEAT_INFINTE);
