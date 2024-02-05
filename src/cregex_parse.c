@@ -51,6 +51,23 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
     return CREGEX_PARSE_SUCCESS;
 }
 
+cregex_parse_result_status_t   cregex_parse_str_repeat_strbreak(cregex_parse_str_section_args_t* args){
+    /*TODO test*/
+    if(args->_elem_str_i>1){
+        cregex_parse_result_status_t res;
+        --args->regex_i;
+        --args->_elem_str_i;
+        res = cregex_parse_str_strbreak(args);
+        ++args->regex_i;
+        ++args->_elem_str_i;        
+
+        if(res != CREGEX_PARSE_SUCCESS) return res;
+    }
+    return cregex_parse_str_strbreak(args);
+}
+
+
+
 cregex_parse_result_status_t  cregex_parse_str_repeat(cregex_parse_str_section_args_t* args,size_t min,size_t max){
     if(args->elems_i==0 || cregex_element_is_repeat(&args->elems[args->elems_i-1],1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;
 
@@ -132,19 +149,19 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
                 res = cregex_parse_str_range(args);
                 break;
             case '*':
-                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;
+                if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;
                 res = cregex_parse_str_repeat_inf(args,0);
                 break;
             case '+':
-                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;                
+                if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;
                 res = cregex_parse_str_repeat_inf(args,1);
                 break;                
             case '?':
-                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;                
+                if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;
                 res = cregex_parse_str_repeat(args,0,1);
                 break;
             case '{':
-                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;                
+                if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) break;
                 res = cregex_parse_str_repeat_range(args);
                 break;
             case '[':
