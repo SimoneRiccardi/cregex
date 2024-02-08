@@ -18,6 +18,5 @@ typedef struct{
 
 
 cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse_str_section_args_t* args,const char* regex,cregex_element_t* elems,size_t elems_size);
-cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args);
-
+cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args,char termchr);
 #endif

@@ -1,12 +1,6 @@
 #include "./cregex_parse.h"
 #include <stdlib.h>
 
-bool               cregex_parse_str_is_terminated(const char* str){
-    /*TODO implement*/
-    return *str=='\0';
-}
-
-
 cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse_str_section_args_t* args,const char* regex,cregex_element_t* elems,size_t elems_size){
     args->elems = elems;
     args->elems_i = 0;
@@ -31,9 +25,9 @@ cregex_parse_result_status_t   cregex_parse_str_strbreak(cregex_parse_str_sectio
 cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_args_t* args){
     cregex_parse_result_status_t res;
 
-    if(   args->regex_i==0 ||
-          /*                      !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||  TODO implement braket and uncomment this instruction*/
-          cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ])
+    if(   args->regex_i==0 
+          /*  || !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||  TODO implement braket and uncomment this instruction*/
+          /*  ||  cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ])*/
           ){
             return CREGEX_PARSE_SUCCESS;
     }
@@ -111,7 +105,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     return CREGEX_PARSE_SUCCESS;
 }
 
-cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args){
+cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args,char termchr){
     cregex_parse_result_status_t res = CREGEX_PARSE_SUCCESS;
 /*
     cregex_parse_str_result_t res;
@@ -134,7 +128,7 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
             }                                                               \
     }
 */
-    for(;!cregex_parse_str_is_terminated(&args->regex[args->regex_i]);++args->regex_i){
+    for(;args->regex[args->regex_i]!=termchr;++args->regex_i){
         switch(args->regex[args->regex_i]){
             case '-':
                 res = cregex_parse_str_range(args);
