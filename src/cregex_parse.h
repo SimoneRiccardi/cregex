@@ -14,6 +14,7 @@ typedef struct{
     size_t   regex_i;
 
     size_t   _elem_str_i;
+    cregex_element_t* _last_elem;
 }cregex_parse_str_section_args_t;
 
 
