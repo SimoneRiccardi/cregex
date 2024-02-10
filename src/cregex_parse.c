@@ -138,7 +138,7 @@ cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_a
 }
 
 cregex_parse_result_status_t  cregex_parse_str_group(cregex_parse_str_section_args_t* args){
-
+       ++args->regex_i;
 }
 
 cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args,char termchr){
@@ -190,11 +190,13 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
                 break;
             case '{':                
                 if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
-                if((res = cregex_parse_str_repeat_range(args)) != CREGEX_PARSE_SUCCESS) return res;
+                if((res = cregex_parse_str_group(args)) != CREGEX_PARSE_SUCCESS) return res;
                 break;
             case '[':
             case '(':
-                
+                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
+                if((res = cregex_parse_str_repeat_range(args)) != CREGEX_PARSE_SUCCESS) return res;
+                break;
             case '^':
             case '$':
             case '|':
