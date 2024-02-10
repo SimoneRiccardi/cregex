@@ -137,6 +137,9 @@ cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_a
 
 }
 
+cregex_parse_result_status_t  cregex_parse_str_group(cregex_parse_str_section_args_t* args){
+
+}
 
 cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args,char termchr){
     cregex_parse_result_status_t res = CREGEX_PARSE_SUCCESS;
@@ -164,6 +167,7 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
     for(;args->regex[args->regex_i]!=termchr;++args->regex_i){
         switch(args->regex[args->regex_i]){
             case '.':
+                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
                 if(!cregex_parse_str_element_alloc(args,1)){
                     return CREGEX_PARSE_OUT_OF_MEMORY;
                 }
