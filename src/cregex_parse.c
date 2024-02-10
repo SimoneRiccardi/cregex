@@ -8,15 +8,23 @@ cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse
     args->regex = regex;
     args->regex_i = 0;
     args->_elem_str_i = 0;
-    args->_last_elem  = NULL;
+    args->_elem_allocated  = NULL;
     return args;
+}
+
+cregex_element_t*  cregex_parse_str_element_get_allocated(cregex_parse_str_section_args_t* args){
+    return args->_elem_allocated;
+}
+
+size_t  cregex_parse_str_element_get_allocated_size(cregex_parse_str_section_args_t* args){
+    return (args->elems+args->elems_i)-args->_elem_allocated;
 }
 
 size_t cregex_parse_str_element_alloc(cregex_parse_str_section_args_t* args,size_t n){
     if(args->elems_i+n > args->elems_size){
         return args->elems_size-args->elems_i;
     }
-    args->_last_elem = args->elems;
+    args->_elem_allocated = args->elems;
     args->elems_i = args->elems_i+n;
     return n;
 }
@@ -29,7 +37,7 @@ cregex_parse_result_status_t   cregex_parse_str_strbreak(cregex_parse_str_sectio
         if(!cregex_parse_str_element_alloc(args,1)){
             return CREGEX_PARSE_OUT_OF_MEMORY;
         }
-        cregex_element_init_str(args->_last_elem,args->regex + args->regex_i - args->_elem_str_i,args->_elem_str_i);
+        cregex_element_init_str(cregex_parse_str_element_get_allocated(args),args->regex + args->regex_i - args->_elem_str_i,args->_elem_str_i);
         args->_elem_str_i=0;
     }
     return CREGEX_PARSE_SUCCESS;
@@ -52,10 +60,10 @@ cregex_parse_result_status_t   cregex_parse_str_repeat_strbreak(cregex_parse_str
 
 
 cregex_parse_result_status_t  cregex_parse_str_repeat(cregex_parse_str_section_args_t* args,size_t min,size_t max){
-    /*if(!args->_last_elem || !cregex_element_is_repeat(&args->elems[args->elems_i-1],1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;*/
-    if(!args->_last_elem || !cregex_element_is_repeat(args->_last_elem,1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;
+    /*if(!cregex_parse_str_element_get_allocated(args) || !cregex_element_is_repeat(&args->elems[args->elems_i-1],1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;*/
+    if(!cregex_parse_str_element_get_allocated(args) || !cregex_element_is_repeat(cregex_parse_str_element_get_allocated(args),1,1)) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_REPEAT_POSITION;
  
-    cregex_element_set_repeat(args->_last_elem,min,max);
+    cregex_element_set_repeat(cregex_parse_str_element_get_allocated(args),min,max);
     return CREGEX_PARSE_SUCCESS;
 }
 
@@ -73,7 +81,7 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     args->regex_i = args->regex_i + nsize;
     
     if(args->regex[args->regex_i]=='}'){
-        cregex_element_set_repeat(args->_last_elem,min,min);
+        cregex_element_set_repeat(cregex_parse_str_element_get_allocated(args),min,min);
         return CREGEX_PARSE_SUCCESS;
     }else if(args->regex[args->regex_i]!=','){
         return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
@@ -83,9 +91,9 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     max = (size_t) strtoul(args->regex+args->regex_i,&eptr,0);
     nsize = (eptr-(args->regex+args->regex_i));
     if(nsize==0){
-        cregex_element_set_repeat(args->_last_elem,min,CREGEX_ELEMENT_REPEAT_INFINTE);
+        cregex_element_set_repeat(cregex_parse_str_element_get_allocated(args),min,CREGEX_ELEMENT_REPEAT_INFINTE);
     }else{
-        cregex_element_set_repeat(args->_last_elem,min,max);
+        cregex_element_set_repeat(cregex_parse_str_element_get_allocated(args),min,max);
     }
 
     args->regex_i = args->regex_i + nsize;
@@ -119,7 +127,7 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
     if(cregex_parse_str_element_alloc(args,1)!=1){
         return CREGEX_PARSE_OUT_OF_MEMORY;
     }
-    cregex_element_init_range(args->_last_elem,args->regex[args->regex_i],args->regex[args->regex_i+2]); 
+    cregex_element_init_range(cregex_parse_str_element_get_allocated(args),args->regex[args->regex_i],args->regex[args->regex_i+2]); 
     args->regex_i+=3;
     return CREGEX_PARSE_SUCCESS;
 }
