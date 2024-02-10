@@ -1,5 +1,6 @@
 #include "./cregex_parse.h"
 #include <stdlib.h>
+#include <string.h>
 
 cregex_parse_str_section_args_t*  cregex_parse_str_section_arg_init(cregex_parse_str_section_args_t* args,const char* regex,cregex_element_t* elems,size_t elems_size){
     args->elems = elems;
@@ -21,7 +22,7 @@ size_t  cregex_parse_str_element_get_allocated_size(cregex_parse_str_section_arg
 }
 
 size_t cregex_parse_str_element_alloc(cregex_parse_str_section_args_t* args,size_t n){
-    if(args->elems_i+n > args->elems_size){
+    if(args->elems_size-args->elems_i < n){
         return args->elems_size-args->elems_i;
     }
     args->_elem_allocated = args->elems;
@@ -124,7 +125,7 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
     }
     cregex_element_init_range(&args->elems[args->elems_i++],args->regex[args->regex_i],args->regex[args->regex_i+2]);
     */
-    if(cregex_parse_str_element_alloc(args,1)!=1){
+    if(!cregex_parse_str_element_alloc(args,1)){
         return CREGEX_PARSE_OUT_OF_MEMORY;
     }
     cregex_element_init_range(cregex_parse_str_element_get_allocated(args),args->regex[args->regex_i],args->regex[args->regex_i+2]); 
@@ -162,6 +163,12 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
 */
     for(;args->regex[args->regex_i]!=termchr;++args->regex_i){
         switch(args->regex[args->regex_i]){
+            case '.':
+                if(!cregex_parse_str_element_alloc(args,1)){
+                    return CREGEX_PARSE_OUT_OF_MEMORY;
+                }
+                cregex_element_init_range(cregex_parse_str_element_get_allocated(args),'\1','\255'); 
+                break;
             case '-':
                 res = cregex_parse_str_range(args);
                 break;
@@ -182,13 +189,21 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
                 if((res = cregex_parse_str_repeat_range(args)) != CREGEX_PARSE_SUCCESS) return res;
                 break;
             case '[':
-            case ']':
             case '(':
-            case ')':
+                
             case '^':
             case '$':
             case '|':
+                
+            case '\\':
+                if(!strchr("\\.[()*+?{|^$",args->regex[args->regex_i+1])) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
+                args->_elem_str_i = args->_elem_str_i+2;
+                ++args->regex_i;
+                break;
+            case ')':
+                return CREGEX_PARSE_SYNTAX_ERROR_INVALID_GROUPING;
             case '\0':
+                return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
             default:
                 ++args->_elem_str_i;
                 break;
