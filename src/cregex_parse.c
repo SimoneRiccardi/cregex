@@ -133,7 +133,7 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
     return CREGEX_PARSE_SUCCESS;
 }
 
-cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_args_t* args){
+cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_args_t* args,char termchr){
 
 }
 
@@ -193,9 +193,12 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
                 if((res = cregex_parse_str_group(args)) != CREGEX_PARSE_SUCCESS) return res;
                 break;
             case '[':
+                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
+                if((res = cregex_parse_str_braket(args,termchr)) != CREGEX_PARSE_SUCCESS) return res;
+                break;
             case '(':
                 if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
-                if((res = cregex_parse_str_repeat_range(args)) != CREGEX_PARSE_SUCCESS) return res;
+                if((res = cregex_parse_str_group(args)) != CREGEX_PARSE_SUCCESS) return res;
                 break;
             case '^':
             case '$':
