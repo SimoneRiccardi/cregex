@@ -134,7 +134,31 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
 }
 
 cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_args_t* args,char termchr){
+       /*TODO test*/
+       size_t  starti;
+       size_t  endi;
 
+       ++args->regex_i;       
+       for(endi = starti = args->regex_i;args->regex[args->regex_i]!=termchr && args->regex[args->regex_i+1]!='[';args->regex_i++) {
+           switch(args->regex[args->regex_i]) {
+               case ')':
+                   return CREGEX_PARSE_SYNTAX_ERROR_INVALID_GROUPING;
+               case '\0':
+                   return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
+               case ']':
+                   endi = args->regex_i;
+                   break;
+           }
+       }
+
+       args->regex_i = endi;
+       if(endi-starti>0){
+           if(!cregex_parse_str_element_alloc(args,1)){
+               return CREGEX_PARSE_OUT_OF_MEMORY;
+           }
+           cregex_element_init_str_braket(cregex_parse_str_element_get_allocated(args),args->regex + starti,endi-starti);
+       }
+       return CREGEX_PARSE_SUCCESS;
 }
 
 cregex_parse_result_status_t  cregex_parse_str_group(cregex_parse_str_section_args_t* args){
