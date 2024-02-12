@@ -106,33 +106,6 @@ cregex_parse_result_status_t  cregex_parse_str_repeat_range(cregex_parse_str_sec
     return CREGEX_PARSE_SUCCESS;
 }
 
-cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_args_t* args){
-    cregex_parse_result_status_t res;
-
-    if(   args->regex_i==0 
-          /*  || !cregex_section_in(args->type,CREGEX_SECTION_BRAKET) ||  TODO implement braket and uncomment this instruction*/
-          /*  ||  cregex_parse_str_is_terminated(&args->regex[ args->regex_i + 1 ])*/
-          ){
-            return CREGEX_PARSE_SUCCESS;
-    }
-    
-    --args->regex_i;
-    --args->_elem_str_i;
-    if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
-    /*
-    if(args->elems_i==args->elems_size){
-        return CREGEX_PARSE_OUT_OF_MEMORY;
-    }
-    cregex_element_init_range(&args->elems[args->elems_i++],args->regex[args->regex_i],args->regex[args->regex_i+2]);
-    */
-    if(!cregex_parse_str_element_alloc(args,1)){
-        return CREGEX_PARSE_OUT_OF_MEMORY;
-    }
-    cregex_element_init_range(cregex_parse_str_element_get_allocated(args),args->regex[args->regex_i],args->regex[args->regex_i+2]); 
-    args->regex_i+=3;
-    return CREGEX_PARSE_SUCCESS;
-}
-
 cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_args_t* args,char termchr){
        size_t  starti;
        size_t  endi;
@@ -198,9 +171,6 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
                     return CREGEX_PARSE_OUT_OF_MEMORY;
                 }
                 cregex_element_init_range(cregex_parse_str_element_get_allocated(args),'\1','\255'); 
-                break;
-            case '-':
-                res = cregex_parse_str_range(args);
                 break;
             case '*':
                 if((res = cregex_parse_str_repeat_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
