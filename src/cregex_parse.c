@@ -167,6 +167,9 @@ cregex_parse_result_status_t  cregex_parse_str_group(cregex_parse_str_section_ar
 
 cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section_args_t* args,char termchr){
     cregex_parse_result_status_t res = CREGEX_PARSE_SUCCESS;
+    size_t                       start_elems_i = args->elems_i;
+    cregex_element_t*            last_or_elem=NULL;
+
 /*
     cregex_parse_str_result_t res;
     res.n_elements_used = 0;
@@ -227,7 +230,13 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
             case '^':
             case '$':
             case '|':
-                
+                /*TODO TEST*/
+                if(args->regex_i>0 && args->regex[args->regex_i-1]=='|') return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
+                if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
+                if(!last_or_elem)last_or_elem = args->elems+start_elems_i;
+                cregex_element_set_next_or_pos( last_or_elem , args->elems_i );
+                last_or_elem = args->elems+args->elems_i;
+                break;
             case '\\':
                 if(!strchr("\\.[()*+?{|^$",args->regex[args->regex_i+1])) return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
                 args->_elem_str_i = args->_elem_str_i+2;
