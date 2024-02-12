@@ -28,10 +28,6 @@ typedef struct{
         struct{
             size_t size;
         }group;
-        struct{
-            size_t next;
-        }Or;
-
     }_data;
     struct{
         size_t min;

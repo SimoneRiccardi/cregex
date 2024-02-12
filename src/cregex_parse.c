@@ -25,7 +25,7 @@ size_t cregex_parse_str_element_alloc(cregex_parse_str_section_args_t* args,size
     if(args->elems_size-args->elems_i < n){
         return args->elems_size-args->elems_i;
     }
-    args->_elem_allocated = args->elems;
+    args->_elem_allocated = args->elems+args->elems_i;
     args->elems_i = args->elems_i+n;
     return n;
 }
@@ -134,7 +134,6 @@ cregex_parse_result_status_t  cregex_parse_str_range(cregex_parse_str_section_ar
 }
 
 cregex_parse_result_status_t  cregex_parse_str_braket(cregex_parse_str_section_args_t* args,char termchr){
-       /*TODO test*/
        size_t  starti;
        size_t  endi;
 
@@ -230,11 +229,10 @@ cregex_parse_result_status_t   cregex_parse_str_section(cregex_parse_str_section
             case '^':
             case '$':
             case '|':
-                /*TODO TEST*/
                 if(args->regex_i>0 && args->regex[args->regex_i-1]=='|') return CREGEX_PARSE_SYNTAX_ERROR_INVALID_CHARACTER;
                 if((res = cregex_parse_str_strbreak(args)) != CREGEX_PARSE_SUCCESS) return res;
                 if(!last_or_elem)last_or_elem = args->elems+start_elems_i;
-                cregex_element_set_next_or_pos( last_or_elem , args->elems_i );
+                cregex_element_set_next_or_pos( last_or_elem , (args->elems+args->elems_i)-last_or_elem  );
                 last_or_elem = args->elems+args->elems_i;
                 break;
             case '\\':
